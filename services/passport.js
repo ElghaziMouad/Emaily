@@ -16,8 +16,10 @@ passport.deserializeUser((id, done) => {
 		})
 })
 
+
 passport.use(
 	//we can call it 'google' implicity
+
 	new GoogleStrategy({
 		clientID: keys.googleClientID,
 		clientSecret: keys.googleClientSecret,
