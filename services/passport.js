@@ -20,29 +20,24 @@ passport.deserializeUser((id, done) => {
 passport.use(
 	//we can call it 'google' implicity
 
-	new GoogleStrategy({
-		clientID: keys.googleClientID,
-		clientSecret: keys.googleClientSecret,
-		callbackURL: '/auth/google/callback',
-		proxy: true
-	}, 
-	(accessToken, refreshToken, profile, done) => {
-		// this return a promise and using ES2015
-		User.findOne({ googleId: profile.id})
-			.then((existingUser) => {
-				console.log(existingUser);
-				if (existingUser) {
-					console.log('existingUser');
-					done(null, existingUser);
-				} else {
-					new User({googleId: profile.id})
-						.save()
-						.then(user => done(null, user));
-				}
-			})
-
-        
-        
-	})
+	new GoogleStrategy(
+		{
+			clientID: keys.googleClientID,
+			clientSecret: keys.googleClientSecret,
+			callbackURL: '/auth/google/callback',
+			proxy: true //to not use the default heroku proxy which make all request to http
+		}, 
+		async (accessToken, refreshToken, profile, done) => {
+			// this return a promise and using ES2015
+			const existingUser = await User.findOne({ googleId: profile.id});
+			
+			if (existingUser) {
+				return done(null, existingUser);
+			} 
+			
+			const user = await new User({googleId: profile.id}).save();
+			done(null, user);
+		}
+	)
 );
 //every use to or  out to DB is async request so we cant "const user =User.findOne({ googleId: profile.id})"

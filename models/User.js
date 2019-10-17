@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 //const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-	googleId: String
+	googleId: String,
+	credits: { type: Number, default: 0 }
 });
 
 //create new collection 'users' if it not exit
