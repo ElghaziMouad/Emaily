@@ -3,5 +3,6 @@ module.exports = (req, res, next) => {
 		return res.status(401).send({ error: 'You must log in555!'})
 	}
 
+	console.log('auth check!!!!')
 	next();//go to the next middleware
 };
